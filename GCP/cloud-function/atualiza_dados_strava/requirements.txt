@@ -1,0 +1,5 @@
+# Function dependencies
+pandas>=1.3.5
+google-cloud-storage>=2.1.0
+google-cloud-bigquery>=2.34.2
+google-cloud-secret-manager==2.10.0
