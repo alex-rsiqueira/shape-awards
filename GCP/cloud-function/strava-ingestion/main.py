@@ -17,7 +17,7 @@ def main(event, context):
 
             user_name = user['Name']
             print(f'Start - User: {user_name}')
-            
+
             #user_id = user['UserID']
             client_id = user['Client_ID']
             client_secret = user['Client_Secret']
@@ -43,12 +43,21 @@ def main(event, context):
             # Insert to BigQuery
             support.insert_db(df_athlete,'tb_strava_athlete','raw','shape-awards-2024')
 
+            
             print('Get activities data')
-            r = requests.get('https://www.strava.com/api/v3/athlete/activities?per_page=100', headers=headers)
-
+            result = []
+            
+            for i in range(1,100):
+                page = requests.get(f'https://www.strava.com/api/v3/athlete/activities?page={i}&per_page=200', headers=headers).json()
+                
+                if page != []:
+                    result += page 
+                else:
+                    break
+            
             data = []
             # Get athlete ID
-            for row in r.json():
+            for row in result:
                 row['athlete'] = row['athlete']['id']
                 data.append(row)
 
