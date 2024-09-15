@@ -8,7 +8,7 @@ from google.cloud import bigquery
 from google.cloud import secretmanager
 from google.cloud.bigquery import SchemaField
 
-PROJECT_ID = os.environ.get("PROJECT_ID")
+PROJECT_ID = 'shape-awards-2024'#os.environ.get("PROJECT_ID")
 DATASET_ID = 'raw'
 
 df = pd.DataFrame()
@@ -67,10 +67,13 @@ def generate_bigquery_schema(df: pd.DataFrame) -> list[SchemaField]:
     }
     schema = []
     for column, dtype in df.dtypes.items():
+
         val = df[column].iloc[0]
         mode = "REPEATED" if isinstance(val, list) else "NULLABLE"
+        if mode == "REPEATED" and len(df[df[column].apply(len) > 0]) > 0:
+            val = df[df[column].apply(len) > 0][column].iloc[0]
 
-        if isinstance(val, dict) or (mode == "REPEATED" and isinstance(val[0], dict)):
+        if isinstance(val, dict) or (mode == "REPEATED" and isinstance(next(iter(val), None), dict)):
             fields = generate_bigquery_schema(pd.json_normalize(val))
         else:
             fields = ()

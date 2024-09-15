@@ -65,6 +65,9 @@ def main(event, context):
             df_activities = pd.DataFrame(data)
             dtinsert = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
             df_activities['dt_insert'] = dtinsert
+
+            if 'device_watts' in df_activities:
+                df_activities['device_watts'] = df_activities['device_watts'].astype(bool)
             
             # Insert to BigQuery
             support.insert_db(df_activities,'tb_strava_activities','raw','shape-awards-2024')
