@@ -124,9 +124,8 @@ def refresh_token(client_id,client_secret,code,refresh_token):
 def get_strava_accounts():
    
     bq_client = bigquery.Client(project=PROJECT_ID)
-    query_job = bq_client.query(f"""SELECT UserID, Name, Client_ID, Client_Secret, Authorization_Code, Refresh_Token
-                                    FROM `{PROJECT_ID}.trusted.tb_sheet_strava_account`
-                                    WHERE Authorization_Code IS NOT NULL
+    query_job = bq_client.query(f"""SELECT Name, App_Key
+                                    FROM `{PROJECT_ID}.trusted.tb_sheet_binance_accounts`
                                 """)
     result = query_job.result()  # Waits for job to complete.
     account_list = [dict(row) for row in query_job]
